@@ -76,3 +76,4 @@ merge 到 `main` 會自動觸發：
 
 部署需要的雲端資源（GCP/Supabase/Upstash/Cloudflare/Fugle）與對應的 GitHub secrets，
 照 [`docs/infra/gcp-setup.md`](docs/infra/gcp-setup.md) 設一次。
+# ci verify
