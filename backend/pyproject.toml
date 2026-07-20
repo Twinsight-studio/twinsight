@@ -1,0 +1,50 @@
+[project]
+name = "twinsight-backend"
+version = "0.1.0"
+description = "TwInsight backend — FastAPI modular monolith"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "sqlalchemy[asyncio]>=2.0",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "psycopg[binary]>=3.2",
+    "alembic>=1.14",
+    "redis>=5.2",
+    "httpx>=0.27",
+]
+
+# ponytail: split via optional-dependencies (PEP 621), not a new tool —
+# `uv sync` installs base only, `uv sync --extra job` adds the batch-job stack.
+[project.optional-dependencies]
+job = [
+    "pandas>=2.2",
+    "numpy>=2.1",
+    "pandas-ta>=0.3.14b0",
+    "yfinance>=0.2",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.8",
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]

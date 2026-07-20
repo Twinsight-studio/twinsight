@@ -1,0 +1,87 @@
+name: deploy-backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/deploy-backend.yml"
+
+defaults:
+  run:
+    working-directory: backend
+
+permissions:
+  contents: read
+  id-token: write # required for Workload Identity Federation
+
+env:
+  REGION: asia-northeast1
+  SERVICE_NAME: twinsight-api
+  JOB_NAME: twinsight-job
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker "${{ secrets.ARTIFACT_REGISTRY_HOST }}"
+
+      - name: Build and push twinsight-api
+        run: |
+          docker build -f Dockerfile.api \
+            -t "${{ secrets.ARTIFACT_REGISTRY }}/${SERVICE_NAME}:${{ github.sha }}" .
+          docker push "${{ secrets.ARTIFACT_REGISTRY }}/${SERVICE_NAME}:${{ github.sha }}"
+
+      - name: Build and push twinsight-job
+        run: |
+          docker build -f Dockerfile.job \
+            -t "${{ secrets.ARTIFACT_REGISTRY }}/${JOB_NAME}:${{ github.sha }}" .
+          docker push "${{ secrets.ARTIFACT_REGISTRY }}/${JOB_NAME}:${{ github.sha }}"
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Run Alembic migration (Supavisor session-mode pooler, port 5432)
+        run: uv sync && uv run alembic upgrade head
+        env:
+          DATABASE_MIGRATION_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
+
+      - name: Deploy Cloud Run Service
+        run: |
+          gcloud run deploy "$SERVICE_NAME" \
+            --image "${{ secrets.ARTIFACT_REGISTRY }}/${SERVICE_NAME}:${{ github.sha }}" \
+            --region "$REGION" \
+            --project "${{ secrets.GCP_PROJECT_ID }}" \
+            --cpu 1 \
+            --memory 512Mi \
+            --min-instances 0 \
+            --max-instances 1 \
+            --concurrency 40 \
+            --no-cpu-throttling=false \
+            --set-env-vars "DATABASE_URL=${{ secrets.DATABASE_URL }},REDIS_URL=${{ secrets.REDIS_URL }},FUGLE_API_KEY=${{ secrets.FUGLE_API_KEY }},JWT_SECRET=${{ secrets.JWT_SECRET }}"
+
+      - name: Update Cloud Run Job (post-market batch + keep-alive)
+        run: |
+          gcloud run jobs update "$JOB_NAME" \
+            --image "${{ secrets.ARTIFACT_REGISTRY }}/${JOB_NAME}:${{ github.sha }}" \
+            --region "$REGION" \
+            --project "${{ secrets.GCP_PROJECT_ID }}" \
+            --set-env-vars "DATABASE_URL=${{ secrets.DATABASE_URL }},REDIS_URL=${{ secrets.REDIS_URL }}" \
+            || gcloud run jobs create "$JOB_NAME" \
+            --image "${{ secrets.ARTIFACT_REGISTRY }}/${JOB_NAME}:${{ github.sha }}" \
+            --region "$REGION" \
+            --project "${{ secrets.GCP_PROJECT_ID }}" \
+            --set-env-vars "DATABASE_URL=${{ secrets.DATABASE_URL }},REDIS_URL=${{ secrets.REDIS_URL }}"

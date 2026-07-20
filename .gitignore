@@ -1,0 +1,11 @@
+# Python (backend)
+backend/.venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/.pytest_cache/
+backend/.ruff_cache/
+backend/.env
+!backend/.env.example
+
+# macOS
+.DS_Store

@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "twinsight-frontend",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-07-20",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  // TODO: set NEXT_PUBLIC_API_BASE_URL once the backend Cloud Run URL exists.
+  "vars": {}
+}
