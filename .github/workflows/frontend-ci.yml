@@ -1,10 +1,11 @@
 name: frontend-ci
 
+# No path filter on the trigger itself — branch protection requires this
+# check on every PR (including backend-only ones), so the job must always
+# run and report. The paths-filter step below skips the real work when
+# frontend/ wasn't touched, but the job still concludes successfully.
 on:
   pull_request:
-    paths:
-      - "frontend/**"
-      - ".github/workflows/frontend-ci.yml"
 
 defaults:
   run:
@@ -16,26 +17,41 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+              - '.github/workflows/frontend-ci.yml'
+
       - uses: actions/setup-node@v4
+        if: steps.filter.outputs.frontend == 'true'
         with:
           node-version: "22"
           cache: "npm"
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
+        if: steps.filter.outputs.frontend == 'true'
         run: npm ci
 
       - name: Lint
+        if: steps.filter.outputs.frontend == 'true'
         run: npm run lint
 
       - name: Typecheck
+        if: steps.filter.outputs.frontend == 'true'
         run: npm run typecheck
 
       - name: Test
+        if: steps.filter.outputs.frontend == 'true'
         run: npm run test
 
       - name: Next build
+        if: steps.filter.outputs.frontend == 'true'
         run: npm run build
 
       - name: OpenNext build (Cloudflare) validation
+        if: steps.filter.outputs.frontend == 'true'
         run: npm run opennext:build

@@ -4,8 +4,8 @@ import { describe, expect, it } from "vitest";
 import Home from "./page";
 
 describe("Home", () => {
-  it("renders the app name", () => {
-    render(<Home />);
+  it("renders the app name", async () => {
+    render(await Home());
     expect(screen.getByText("TwInsight")).toBeInTheDocument();
   });
 });

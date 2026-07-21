@@ -5,6 +5,7 @@ repository; this file only wires modules together.
 """
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.modules.alerts.router import router as alerts_router
 from app.modules.auth.router import router as auth_router
@@ -16,6 +17,15 @@ from app.modules.technical.router import router as technical_router
 from app.modules.watchlist.router import router as watchlist_router
 
 app = FastAPI(title="TwInsight API")
+
+# ponytail: allow all origins for now (only read-only /health and stub
+# routes exist) — restrict to the real Cloudflare Workers origin once the
+# frontend has a stable domain.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["GET"],
+)
 
 for module_router in (
     auth_router,

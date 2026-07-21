@@ -1,10 +1,12 @@
+# No path filter on the trigger itself — branch protection requires the
+# "test" and "pooler-test" checks on every PR (including frontend-only
+# ones), so these jobs must always run and report. The `changes` job below
+# is what the other jobs gate their real steps on; if backend/ wasn't
+# touched they still conclude successfully, just without doing the work.
 name: backend-ci
 
 on:
   pull_request:
-    paths:
-      - "backend/**"
-      - ".github/workflows/backend-ci.yml"
   workflow_dispatch:
 
 defaults:
@@ -12,7 +14,23 @@ defaults:
     working-directory: backend
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+              - '.github/workflows/backend-ci.yml'
+
   test:
+    needs: changes
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     services:
@@ -37,30 +55,38 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: astral-sh/setup-uv@v4
+        if: needs.changes.outputs.backend == 'true'
         with:
           version: "latest"
 
       - name: Install dependencies
+        if: needs.changes.outputs.backend == 'true'
         run: uv sync
 
       - name: Ruff
+        if: needs.changes.outputs.backend == 'true'
         run: uv run ruff check .
 
       - name: Pytest
+        if: needs.changes.outputs.backend == 'true'
         run: uv run pytest
 
       - name: Alembic migration validation (upgrade head, then downgrade base)
+        if: needs.changes.outputs.backend == 'true'
         run: |
           uv run alembic upgrade head
           uv run alembic downgrade base
 
       - name: Docker build — twinsight-api
+        if: needs.changes.outputs.backend == 'true'
         run: docker build -f Dockerfile.api -t twinsight-api:ci .
 
       - name: Docker build — twinsight-job
+        if: needs.changes.outputs.backend == 'true'
         run: docker build -f Dockerfile.job -t twinsight-job:ci .
 
   pooler-test:
+    needs: changes
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     services:
@@ -94,13 +120,16 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: astral-sh/setup-uv@v4
+        if: needs.changes.outputs.backend == 'true'
         with:
           version: "latest"
 
       - name: Install dependencies
+        if: needs.changes.outputs.backend == 'true'
         run: uv sync
 
       - name: Pooler stress test (concurrent SELECT/transaction/commit/rollback bursts)
+        if: needs.changes.outputs.backend == 'true'
         run: |
           uv run python scripts/pooler_stress_test.py \
             --dsn "postgresql+psycopg://postgres@localhost:6432/postgres"
