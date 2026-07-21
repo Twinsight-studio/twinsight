@@ -70,6 +70,7 @@ jobs:
             --min-instances 0 \
             --max-instances 1 \
             --concurrency 40 \
+            --allow-unauthenticated \
             --set-env-vars "DATABASE_URL=${{ secrets.DATABASE_URL }},REDIS_URL=${{ secrets.REDIS_URL }},FUGLE_API_KEY=${{ secrets.FUGLE_API_KEY }},JWT_SECRET=${{ secrets.JWT_SECRET }}"
 
       - name: Update Cloud Run Job (post-market batch + keep-alive)
