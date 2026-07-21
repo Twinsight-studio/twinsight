@@ -8,6 +8,9 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
-  // TODO: set NEXT_PUBLIC_API_BASE_URL once the backend Cloud Run URL exists.
-  "vars": {}
+  "vars": {
+    // Set for real once backend deploy-backend.yml has run once and
+    // printed the actual Cloud Run URL — placeholder until then.
+    "API_BASE_URL": "https://example.invalid"
+  }
 }
