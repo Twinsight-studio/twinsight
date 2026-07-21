@@ -29,6 +29,11 @@ jobs:
 
       - name: OpenNext build (Cloudflare)
         run: npm run opennext:build
+        env:
+          # Next.js inlines NEXT_PUBLIC_* into the client bundle at build
+          # time. The browser polls the backend directly, so the real Cloud
+          # Run URL must be present here — it can't be a runtime var.
+          NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
 
       - name: Deploy to Cloudflare Workers
         run: npx wrangler deploy
