@@ -1,7 +1,11 @@
-"""Upstash Redis client — snapshot cache / rate-limit / lock only.
+"""Upstash Redis client — cross-container state only (API ↔ batch Job).
 
-No historical market data belongs here. Quote cache key format: `quote:{symbol}`,
-TTL 30s (see app/modules/stocks).
+Cost policy: Upstash Free is 500K commands/month and is this architecture's
+first paid bottleneck, while max-instances=1 means the API is a single
+process — so anything the API alone needs (rate limit, quote cache) lives
+in process memory, NOT here. Reach for Redis only when state must survive
+the API container or be shared with the batch Job. No historical market
+data belongs here either way.
 """
 
 from functools import lru_cache

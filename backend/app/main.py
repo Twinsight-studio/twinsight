@@ -4,11 +4,12 @@ Modular monolith: each module in app/modules/* owns its router/service/
 repository; this file only wires modules together.
 """
 
+import time
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.core.redis import get_redis
 from app.modules.alerts.router import router as alerts_router
 from app.modules.auth.router import router as auth_router
 from app.modules.chips.router import router as chips_router
@@ -30,10 +31,16 @@ app.add_middleware(
 )
 
 # Public API, no auth layer (side project, no membership system) — this is
-# the only thing standing between it and unlimited hammering. Fixed-window
-# counter in Redis, shared across Cloud Run instances since it's stateless.
+# the only thing standing between it and unlimited hammering.
+# ponytail: in-process fixed-window counter, NOT Redis — max-instances=1
+# means one process serves all traffic, so local memory is exactly as
+# correct as shared state and costs zero Upstash commands (their free tier
+# is this architecture's first paid bottleneck). Move back to Redis if
+# max-instances ever goes above 1.
 RATE_LIMIT_REQUESTS = 60
 RATE_LIMIT_WINDOW_SECONDS = 60
+
+_rate_windows: dict[str, tuple[int, float]] = {}  # ip -> (count, window_start)
 
 
 @app.middleware("http")
@@ -43,11 +50,19 @@ async def rate_limit(request: Request, call_next):
         request.client.host if request.client else "unknown"
     )
 
-    redis = get_redis()
-    key = f"ratelimit:{client_ip}"
-    count = await redis.incr(key)
-    if count == 1:
-        await redis.expire(key, RATE_LIMIT_WINDOW_SECONDS)
+    now = time.monotonic()
+    count, window_start = _rate_windows.get(client_ip, (0, now))
+    if now - window_start >= RATE_LIMIT_WINDOW_SECONDS:
+        count, window_start = 0, now
+    count += 1
+    _rate_windows[client_ip] = (count, window_start)
+
+    # ponytail: prune expired windows only when the dict gets big, keeps
+    # memory bounded without a background task.
+    if len(_rate_windows) > 10_000:
+        cutoff = now - RATE_LIMIT_WINDOW_SECONDS
+        for ip in [k for k, v in _rate_windows.items() if v[1] < cutoff]:
+            del _rate_windows[ip]
 
     if count > RATE_LIMIT_REQUESTS:
         return JSONResponse({"detail": "Too Many Requests"}, status_code=429)
