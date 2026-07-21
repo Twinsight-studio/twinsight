@@ -1,0 +1,25 @@
+{
+  "recommendations": [
+    // Next.js / React 開發核心
+    "dsznajder.es7-react-js-snippets",
+    "ms-vscode.vscode-typescript-next",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+
+    // HTML / JSX 輔助
+    "formulahendry.auto-close-tag",
+    "formulahendry.auto-rename-tag",
+
+    // 程式碼可讀性與視覺化
+    "oderwat.indent-rainbow",
+    "wayou.vscode-todo-highlight",
+    "simonsiefke.svg-preview",
+    "wix.vscode-import-cost",
+
+    // 專案工具與 Git 管理
+    "eamodio.gitlens",
+    "trabpukcip.vscode-npm-scripts",
+    "redhat.vscode-yaml"
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "editor.detectIndentation": true,
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always",
+    "source.fixAll.eslint": "always",
+    "source.organizeImports": "always"
+  },
+  /*
+   * 為每個段落顯示不同顏色的縮進
+   */
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+
+  // eslint 支援 react 與 typescript
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.alwaysShowStatus": true,
+  "eslint.enable": true,
+
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  // JS/TS/JSX/TSX 統一使用 Prettier 格式化，再搭配 ESLint 存檔自動修復
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "workbench.iconTheme": "material-icon-theme",
+  "files.autoSave": "off",
+  "files.eol": "\n",
+  "files.associations": {
+    "*.json": "json"
+  },
+  /*
+   * Emmet (在 React 中通常不需要特別擴充，系統預設已支援 JSX)
+   */
+  "emmet.triggerExpansionOnTab": true,
+
+  /* 須安裝 TODO Highlight 套件 */
+  "todohighlight.keywords": [
+    "DEBUG:",
+    "REVIEW:",
+    "NOTE:",
+    {
+      "text": "TEST:",
+      "backgroundColor": "#BBFF92",
+      "overviewRulerColor": "#333"
+    },
+    {
+      "text": "API:",
+      "color": "#000"
+    },
+    {
+      "text": "HACK:",
+      "color": "#000",
+      "isWholeLine": false
+    }
+  ],
+  /* 須安裝 NPM-Script 套件 */
+  "npm.scriptExplorerAction": "run",
+  "npm.packageManager": "npm",
+
+  /*
+   * Git
+   */
+  "diffEditor.ignoreTrimWhitespace": true,
+  "git.autofetch": true,
+
+  /*
+   * CSS
+   * 在 tailwind 使用 @apply 會出現 Unknow at rule，忽略此項
+   */
+  "css.lint.unknownAtRules": "ignore"
+}
