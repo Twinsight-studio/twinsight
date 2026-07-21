@@ -9,8 +9,6 @@
     "binding": "ASSETS"
   },
   "vars": {
-    // Set for real once backend deploy-backend.yml has run once and
-    // printed the actual Cloud Run URL — placeholder until then.
-    "API_BASE_URL": "https://example.invalid"
+    "API_BASE_URL": "https://twinsight-api-177799064560.asia-northeast1.run.app"
   }
 }
