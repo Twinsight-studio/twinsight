@@ -8,9 +8,6 @@ from app.main import RATE_LIMIT_REQUESTS, app
 
 @pytest.fixture(scope="module")
 def client() -> Iterator[TestClient]:
-    # Shared across tests: app.core.redis.get_redis() is @lru_cache'd, and
-    # its connection is bound to whichever event loop created it — a fresh
-    # TestClient per test spins up a new loop and breaks the cached client.
     with TestClient(app) as c:
         yield c
 
