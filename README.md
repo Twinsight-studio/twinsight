@@ -37,6 +37,12 @@ make dev-frontend
 複製 `backend/.env.example` → `backend/.env`、`frontend/.env.example` →
 `frontend/.env.local`，依需要調整。
 
+> **本機已經在跑 Postgres / Redis？** `make dev` 預設要 5432 / 6379，若被占用會
+> 起不來。複製根目錄 `.env.example` → `.env`，把 `POSTGRES_PORT` / `REDIS_PORT`
+> 改成沒被占用的埠（例如 15432 / 16379）。容器之間仍走標準內部埠，只有 host 對外
+> 的埠會變。若你也改了 `POSTGRES_PORT` 並在 host 直接跑 `make migrate`，記得同步把
+> `backend/.env` 的 `DATABASE_MIGRATION_URL` host 埠改一致。
+
 ### 個別跑測試
 
 ```bash

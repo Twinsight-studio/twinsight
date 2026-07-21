@@ -1,11 +1,10 @@
-// API_BASE_URL is a Cloudflare Workers runtime var (wrangler.jsonc), not
-// known at Next.js build time — force per-request rendering so it's read
-// fresh instead of baked into a static prerender.
+// Re-fetch backend health on every request (not baked into a static
+// prerender) so this reflects live status.
 export const dynamic = "force-dynamic";
 
 async function checkBackendHealth(): Promise<string> {
-  const apiBaseUrl = process.env.API_BASE_URL;
-  if (!apiBaseUrl) return "API_BASE_URL not configured";
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (!apiBaseUrl) return "NEXT_PUBLIC_API_BASE_URL not configured";
 
   try {
     const res = await fetch(`${apiBaseUrl}/health`, { cache: "no-store" });

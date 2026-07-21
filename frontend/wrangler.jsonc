@@ -8,7 +8,8 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
-  "vars": {
-    "API_BASE_URL": "https://twinsight-api-177799064560.asia-northeast1.run.app"
-  }
+  // No runtime vars: the backend URL is baked into the bundle at build time
+  // via NEXT_PUBLIC_API_BASE_URL (browser polls the backend directly).
+  // See .github/workflows/deploy-frontend.yml and frontend/.env.example.
+  "vars": {}
 }
