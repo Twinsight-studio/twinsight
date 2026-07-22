@@ -58,9 +58,14 @@ jobs:
         with:
           version: "latest"
 
+      # --extra job pulls pandas/pandas-ta/yfinance. They are not in the API
+      # image, but the indicator maths and the yfinance parsing are core
+      # logic that must be covered here — without the extra those tests
+      # cannot even be imported. The API image staying slim is enforced
+      # separately, by the smoke step that runs the real image.
       - name: Install dependencies
         if: needs.changes.outputs.backend == 'true'
-        run: uv sync
+        run: uv sync --extra job
 
       - name: Ruff
         if: needs.changes.outputs.backend == 'true'
