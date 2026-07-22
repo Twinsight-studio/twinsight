@@ -83,3 +83,24 @@ jobs:
       - name: Docker build — twinsight-job
         if: needs.changes.outputs.backend == 'true'
         run: docker build -f Dockerfile.job -t twinsight-job:ci .
+
+      # A successful build does not mean the image can start. The API image
+      # deliberately omits pandas/numpy, so any accidental import of the
+      # batch-only modules breaks it at runtime while CI stays green —
+      # importing app.main here is what actually catches that.
+      - name: Smoke — API image imports without the batch dependencies
+        if: needs.changes.outputs.backend == 'true'
+        run: |
+          docker run --rm twinsight-api:ci python -c "
+          import app.main
+          try:
+              import pandas
+          except ImportError:
+              print('API image is slim and imports cleanly')
+          else:
+              raise SystemExit('pandas leaked into the API image')
+          "
+
+      - name: Smoke — Job image can run the batch entrypoint
+        if: needs.changes.outputs.backend == 'true'
+        run: docker run --rm twinsight-job:ci python -c "import app.jobs.run_batch"

@@ -60,6 +60,25 @@ make test-frontend     # npm ci + lint + typecheck + test + build
 make test-backend      # uv sync + ruff + pytest
 ```
 
+### 盤後批次（抓資料 → 算指標 → 寫 DB）
+
+```bash
+docker compose run --rm job                      # 全市場（~1975 檔，很久）
+docker compose run --rm job --limit 20           # 只跑前 20 檔，開發用
+docker compose run --rm job --symbols 2330,2317  # 指定股票
+docker compose run --rm job --period 5y          # yfinance 期間，預設 1y
+```
+
+`job` 掛在 `batch` profile 下，所以 `make dev` 不會啟動它 —— 它是一次性任務，
+不是常駐服務。每次執行都會寫一筆 `job_runs`，成功或失敗都查得到：
+
+```sql
+SELECT job_name, status, message, started_at FROM job_runs ORDER BY id DESC LIMIT 5;
+```
+
+規格書要求收盤後 14:35 自動跑；本地部署沒有 Cloud Scheduler，用 `crontab` 或
+macOS `launchd` 掛上面的指令即可（機器當下要開著）。
+
 ### Alembic migration
 
 ```bash

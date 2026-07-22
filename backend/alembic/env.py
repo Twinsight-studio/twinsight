@@ -10,11 +10,9 @@ from sqlalchemy import create_engine
 
 from alembic import context
 from app.core.config import get_settings
+from app.core.models import Base
 
-# TODO: import Base.metadata from app models once models exist, e.g.:
-# from app.core.models import Base
-# target_metadata = Base.metadata
-target_metadata = None
+target_metadata = Base.metadata
 
 config = context.config
 
