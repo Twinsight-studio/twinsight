@@ -3,8 +3,12 @@
 export const dynamic = "force-dynamic";
 
 async function checkBackendHealth(): Promise<string> {
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-  if (!apiBaseUrl) return "NEXT_PUBLIC_API_BASE_URL not configured";
+  // Server components run inside the frontend container, where the API is
+  // reachable over the compose network (API_BASE_URL=http://api:8080).
+  // `localhost` there would mean this container itself. On the host (`next
+  // dev`) API_BASE_URL is unset, so we fall back to the browser-facing URL.
+  const apiBaseUrl = process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (!apiBaseUrl) return "API base URL not configured";
 
   try {
     const res = await fetch(`${apiBaseUrl}/health`, { cache: "no-store" });

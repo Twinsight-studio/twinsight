@@ -1,9 +1,9 @@
 .PHONY: dev dev-frontend down test test-frontend test-backend lint migrate
 
-dev: ## Start Postgres + Redis + backend API (docker compose)
+dev: ## Start the full stack (Postgres + Redis + API + frontend)
 	docker compose up --build
 
-dev-frontend: ## Run frontend dev server (separate terminal from `make dev`)
+dev-frontend: ## Frontend dev server on the host, for hot reload (see README)
 	cd frontend && npm run dev
 
 down:
