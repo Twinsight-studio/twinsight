@@ -1,6 +1,7 @@
-"""Post-market batch job entrypoint (twinsight-job image).
+"""Post-market batch job entrypoint (batch image).
 
-Triggered by Cloud Scheduler -> Cloud Run Job, Mon-Fri 14:35 Asia/Taipei.
+Run after close (Mon-Fri ~14:35 Asia/Taipei) — locally via cron/launchd or
+manually: `docker compose run --rm job`.
 TODO: implement. Needs the pandas/numpy/pandas-ta/yfinance stack, which is
 why this lives in a separate image (Dockerfile.job) from the API.
 """

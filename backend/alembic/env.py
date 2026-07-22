@@ -1,9 +1,7 @@
 """Alembic migration environment.
 
-Runs against Supabase's Supavisor SESSION-mode pooler (port 5432), not the
-transaction-mode pooler the app uses at runtime — migrations need a real
-session, and CI runners are IPv4-only so the IPv6 direct endpoint is out.
-Sync Psycopg 3, plain engine (no NullPool tuning needed here).
+Sync Psycopg 3 engine against the same PostgreSQL as the app (the app uses
+the async engine; migrations need a plain synchronous connection).
 """
 
 from logging.config import fileConfig
@@ -28,7 +26,7 @@ settings = get_settings()
 
 def run_migrations_offline() -> None:
     context.configure(
-        url=settings.database_migration_url,
+        url=settings.database_url,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -38,7 +36,7 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    connectable = create_engine(settings.database_migration_url)
+    connectable = create_engine(settings.database_url)
 
     with connectable.connect() as connection:
         context.configure(connection=connection, target_metadata=target_metadata)

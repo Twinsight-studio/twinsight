@@ -22,8 +22,7 @@ from app.modules.watchlist.router import router as watchlist_router
 app = FastAPI(title="TwInsight API")
 
 # ponytail: allow all origins for now (only read-only /health and stub
-# routes exist) — restrict to the real Cloudflare Workers origin once the
-# frontend has a stable domain.
+# routes exist) — restrict to the frontend's origin once it's fixed.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -32,11 +31,10 @@ app.add_middleware(
 
 # Public API, no auth layer (side project, no membership system) — this is
 # the only thing standing between it and unlimited hammering.
-# ponytail: in-process fixed-window counter, NOT Redis — max-instances=1
-# means one process serves all traffic, so local memory is exactly as
-# correct as shared state and costs zero Upstash commands (their free tier
-# is this architecture's first paid bottleneck). Move back to Redis if
-# max-instances ever goes above 1.
+# ponytail: in-process fixed-window counter, NOT Redis — a single API
+# process serves all traffic, so local memory is exactly as correct as
+# shared state and needs no round-trip. Move to Redis if the API is ever
+# scaled to more than one process/replica.
 RATE_LIMIT_REQUESTS = 60
 RATE_LIMIT_WINDOW_SECONDS = 60
 

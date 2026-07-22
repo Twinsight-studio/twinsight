@@ -9,8 +9,6 @@ npm run dev             # http://localhost:3000
 npm run lint
 npm run typecheck
 npm run test
-npm run build            # next build
-npm run opennext:build   # OpenNext build for Cloudflare Workers
-npm run preview          # opennext build + wrangler local preview
-npm run deploy           # opennext build + wrangler deploy
+npm run build           # next build
+npm run start           # serve the production build
 ```

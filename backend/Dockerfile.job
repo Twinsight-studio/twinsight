@@ -1,8 +1,6 @@
-# twinsight-job — post-market batch + keep-alive. Extra pandas/numpy/
-# pandas-ta/yfinance stack via the `job` optional-dependencies group.
-# Cloud Run Job entrypoint is overridden per-schedule:
-#   run_batch.py (post-market, Mon-Fri 14:35 Asia/Taipei)
-#   keep_alive.py (every 3 days)
+# twinsight-job — post-market batch. Extra pandas/numpy/pandas-ta/yfinance
+# stack via the `job` optional-dependencies group, kept out of the API image
+# so the API stays small.
 FROM python:3.12-slim
 
 RUN pip install --no-cache-dir uv

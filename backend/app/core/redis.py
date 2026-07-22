@@ -1,11 +1,9 @@
-"""Upstash Redis client — cross-container state only (API ↔ batch Job).
+"""Redis client (docker-compose) — cache and cross-container state.
 
-Cost policy: Upstash Free is 500K commands/month and is this architecture's
-first paid bottleneck, while max-instances=1 means the API is a single
-process — so anything the API alone needs (rate limit, quote cache) lives
-in process memory, NOT here. Reach for Redis only when state must survive
-the API container or be shared with the batch Job. No historical market
-data belongs here either way.
+Per spec §7.2: intraday quote snapshots (TTL 30s), screener result cache
+(TTL until next open), session data. The API's own rate limiting lives in
+process memory instead (single process, no need to share). No historical
+market data belongs here — that goes in PostgreSQL.
 """
 
 from functools import lru_cache
