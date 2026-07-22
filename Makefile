@@ -21,5 +21,5 @@ lint:
 	cd frontend && npm run lint
 	cd backend && uv run ruff check .
 
-migrate: ## Run Alembic migrations against DATABASE_MIGRATION_URL
+migrate: ## Run Alembic migrations against DATABASE_URL
 	cd backend && uv run alembic upgrade head

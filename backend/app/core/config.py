@@ -10,13 +10,9 @@ class Settings(BaseSettings):
 
     env: str = "local"
 
-    # Supavisor transaction-mode pooler (port 6543) — used at runtime by the
-    # API service and the batch job. See docs/infra/gcp-setup.md.
+    # PostgreSQL (docker-compose). Used by both the app (async engine) and
+    # Alembic (sync engine) — same URL, the driver mode differs per engine.
     database_url: str = "postgresql+psycopg://postgres:postgres@localhost:5432/postgres"
-
-    # Supavisor session-mode pooler (port 5432) — used only by Alembic
-    # migrations, which need a real session (not transaction pooling).
-    database_migration_url: str = "postgresql+psycopg://postgres:postgres@localhost:5432/postgres"
 
     redis_url: str = "redis://localhost:6379/0"
 
