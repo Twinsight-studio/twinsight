@@ -51,7 +51,3 @@ jobs:
       - name: Next build
         if: steps.filter.outputs.frontend == 'true'
         run: npm run build
-
-      - name: OpenNext build (Cloudflare) validation
-        if: steps.filter.outputs.frontend == 'true'
-        run: npm run opennext:build

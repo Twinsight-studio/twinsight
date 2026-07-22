@@ -1,5 +1,11 @@
 # 雲端資源建置 Runbook
 
+> ⚠️ **v1 未使用此文件。** TwInsight v1 依需求規格書 v3.0 採「本地 Docker Compose」
+> 部署,GitHub 上只保留 CI,沒有自動部署。本文件保留作為日後若要改走雲端託管
+> (Cloud Run + Cloudflare Workers + Supabase + Upstash)的建置紀錄與步驟參考。
+>
+> 選擇本地而非雲端的理由與取捨,見專案根目錄 `README.md` 的「部署」章節。
+
 這台開發機沒有裝 `gcloud`/`wrangler`/`supabase` CLI，也沒有任何雲端帳號憑證，所以下列
 步驟需要 CEO 自己在有帳號的機器上執行一次。完成後把對應的值塞進 GitHub repo secrets
 （`Settings → Secrets and variables → Actions`），CI/CD 就能接手。
