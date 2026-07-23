@@ -11,5 +11,7 @@
   "bracketSameLine": false,
   "insertPragma": false,
   "ignorePath": ".prettierignore",
-  "endOfLine": "lf"
+  "endOfLine": "lf",
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindFunctions": ["clsx", "cva", "cn", "twMerge"]
 }

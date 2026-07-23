@@ -3,6 +3,9 @@
   "editor.tabSize": 2,
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.enable": true,
+  "prettier.requireConfig": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": "always",
     "source.fixAll.eslint": "always",
