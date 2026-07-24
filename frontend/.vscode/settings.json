@@ -2,15 +2,11 @@
   "editor.detectIndentation": true,
   "editor.tabSize": 2,
   "editor.formatOnSave": true,
-  "editor.formatOnSaveMode": "file",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "prettier.enable": true,
   "prettier.requireConfig": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "always",
-    "source.fixAll.eslint": "always",
-    "source.organizeImports": "always"
-  },
+  "editor.codeActionsOnSave": {},
+  "editor.formatOnSaveMode": "file",
   /*
    * 為每個段落顯示不同顏色的縮進
    */
@@ -18,12 +14,7 @@
   "editor.guides.bracketPairs": "active",
 
   // eslint 支援 react 與 typescript
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-  ],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "eslint.alwaysShowStatus": true,
   "eslint.enable": true,
 
