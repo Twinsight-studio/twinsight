@@ -12,7 +12,7 @@ const links = [
   { name: '自選股', href: '/watchlist', icon: StarIcon },
 ]
 
-export default function NavLinks() {
+export default function NavLinks({ callback }: { callback: () => void }) {
   const pathname = usePathname()
 
   return (
@@ -24,9 +24,10 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={cn(
-              'flex items-center justify-start gap-2 p-[10px_20px] rounded-xl bg-surface hover:bg-brand-700 hover:text-brand-50 cursor-pointer text-white',
+              'bg-surface hover:bg-brand-700 hover:text-brand-50 flex cursor-pointer items-center justify-start gap-2 rounded-xl p-[10px_20px] text-white',
               { 'text-brand-50 bg-brand-700': pathname === link.href },
             )}
+            onClick={() => callback()}
           >
             <LinkIcon className="w-5" />
             <p>{link.name}</p>
