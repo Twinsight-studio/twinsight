@@ -25,14 +25,21 @@
 需要：Docker、Node 22+、[uv](https://docs.astral.sh/uv/)。
 
 ```bash
+# 首次：複製環境檔範本（.env 未進版控）
+cp .env.example .env
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env.local
+# 在 backend/.env 填入 FUGLE_API_KEY（即時報價需要；其餘功能不填也能跑）
+
 # 全部（Postgres + Redis + 後端 API + 前端），一個指令
 make dev
 ```
 
 前端：http://localhost:3000　後端：http://localhost:8080/health
 
-複製 `backend/.env.example` → `backend/.env`、`frontend/.env.example` →
-`frontend/.env.local`，依需要調整。
+**資料表會在 API 容器啟動時自動建立**（entrypoint 跑 `alembic upgrade head`），
+所以 `make dev` 一下去 schema 就到位，不必手動 migrate。但**資料庫是空的** ——
+要有股票/K線/籌碼資料，得先跑一次盤後批次（見下方），否則需要讀 DB 的頁面會沒資料。
 
 > **要改前端並看到熱重載？** compose 裡的前端是 production build（`next build`
 > + standalone server），改了程式碼不會即時反映。開發當下請讓 `make dev` 跑著提供
@@ -81,10 +88,13 @@ macOS `launchd` 掛上面的指令即可（機器當下要開著）。
 
 ### Alembic migration
 
+套用是自動的（API 容器啟動時跑 `alembic upgrade head`）。新增 migration 或
+手動操作時：
+
 ```bash
 cd backend
-uv run alembic revision -m "描述"   # 產生新的 migration
-uv run alembic upgrade head          # 套用（本地連 docker-compose 的 Postgres）
+uv run alembic revision --autogenerate -m "描述"   # 依 models 差異產生
+uv run alembic upgrade head                          # 手動套用（連 docker-compose 的 Postgres）
 ```
 
 ## 目錄結構
