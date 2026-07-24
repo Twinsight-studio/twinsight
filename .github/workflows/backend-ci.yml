@@ -58,9 +58,14 @@ jobs:
         with:
           version: "latest"
 
+      # --extra job pulls pandas/pandas-ta/yfinance. They are not in the API
+      # image, but the indicator maths and the yfinance parsing are core
+      # logic that must be covered here — without the extra those tests
+      # cannot even be imported. The API image staying slim is enforced
+      # separately, by the smoke step that runs the real image.
       - name: Install dependencies
         if: needs.changes.outputs.backend == 'true'
-        run: uv sync
+        run: uv sync --extra job
 
       - name: Ruff
         if: needs.changes.outputs.backend == 'true'
@@ -83,3 +88,29 @@ jobs:
       - name: Docker build — twinsight-job
         if: needs.changes.outputs.backend == 'true'
         run: docker build -f Dockerfile.job -t twinsight-job:ci .
+
+      # A successful build does not mean the image can start. The API image
+      # deliberately omits pandas/numpy, so any accidental import of the
+      # batch-only modules breaks it at runtime while CI stays green —
+      # importing app.main here is what actually catches that.
+      - name: Smoke — API image imports without the batch dependencies
+        if: needs.changes.outputs.backend == 'true'
+        run: |
+          docker run --rm twinsight-api:ci python -c "
+          import app.main
+          try:
+              import pandas
+          except ImportError:
+              print('API image is slim and imports cleanly')
+          else:
+              raise SystemExit('pandas leaked into the API image')
+          "
+
+      # `--help` goes through the real ENTRYPOINT, so this covers three
+      # things at once: the image starts, app.jobs.run_batch (and its pandas
+      # stack) imports, and arguments append to the entrypoint rather than
+      # replacing it. Passing a bare command here would NOT work — with
+      # ENTRYPOINT it would be appended as arguments, not run.
+      - name: Smoke — Job image entrypoint accepts arguments
+        if: needs.changes.outputs.backend == 'true'
+        run: docker run --rm twinsight-job:ci --help

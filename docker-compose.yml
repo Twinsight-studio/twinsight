@@ -45,6 +45,26 @@ services:
       redis:
         condition: service_healthy
 
+  # 一次性批次，不是常駐服務 —— 掛 profile 讓 `docker compose up` 不會啟動它。
+  # 執行：docker compose run --rm job              （全市場）
+  #      docker compose run --rm job --limit 20   （開發用）
+  job:
+    profiles: ["batch"]
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.job
+    env_file:
+      - path: backend/.env
+        required: false
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@postgres:5432/postgres
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
   frontend:
     build:
       context: ./frontend

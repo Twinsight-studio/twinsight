@@ -15,4 +15,7 @@ RUN uv sync --no-dev --extra job
 
 ENV PATH="/app/.venv/bin:${PATH}"
 
-CMD ["python", "-m", "app.jobs.run_batch"]
+# ENTRYPOINT, not CMD: `docker compose run --rm job --limit 20` must append
+# its arguments to the batch command. With CMD they would replace it, and
+# Docker would try to exec "--limit" as the binary.
+ENTRYPOINT ["python", "-m", "app.jobs.run_batch"]
