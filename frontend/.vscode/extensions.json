@@ -1,8 +1,10 @@
 {
   "recommendations": [
-    // Next.js / React 開發核心
-    "dsznajder.es7-react-js-snippets",
+    // React / Next.js 開發核心
     "ms-vscode.vscode-typescript-next",
+    "dsznajder.es7-react-js-snippets",
+
+    // 格式化與程式碼品質
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
     "bradlc.vscode-tailwindcss",
@@ -11,7 +13,7 @@
     "formulahendry.auto-close-tag",
     "formulahendry.auto-rename-tag",
 
-    // 程式碼可讀性與視覺化
+    // 可讀性與視覺化
     "oderwat.indent-rainbow",
     "wayou.vscode-todo-highlight",
     "simonsiefke.svg-preview",
