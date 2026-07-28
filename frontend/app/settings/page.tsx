@@ -1,7 +1,7 @@
 export default function Page() {
   return (
     <>
-      <p>settings</p>
+      <p className="flex flex-1">settings</p>
     </>
   )
 }

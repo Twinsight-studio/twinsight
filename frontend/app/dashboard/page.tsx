@@ -1,7 +1,9 @@
+import PageTitle from '@/app/ui/PageTitle'
+
 export default function Page() {
   return (
-    <>
-      <p>dashboard</p>
-    </>
+    <div className="flex h-full">
+      <main className="flex-1 p-5"></main>
+    </div>
   )
 }
