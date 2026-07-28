@@ -1,19 +1,36 @@
 import '@/app/ui/globals.css'
 
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
 import { Providers } from '@/app/providers'
-import Sidebar from '@/app/ui/Sidebar'
+import PageLayout from '@/app/ui/PageLayout'
+import { Noto_Sans_TC, Inter, IBM_Plex_Mono } from 'next/font/google'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const notoSansTC = Noto_Sans_TC({
   subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  variable: '--font-noto-sans-tc',
 })
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const inter = Inter({
   subsets: ['latin'],
+  variable: '--font-inter',
 })
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-plex-mono',
+})
+
+// const geistSans = Geist({
+//   variable: '--font-geist-sans',
+//   subsets: ['latin'],
+// })
+
+// const geistMono = Geist_Mono({
+//   variable: '--font-geist-mono',
+//   subsets: ['latin'],
+// })
 
 export const metadata: Metadata = {
   title: 'TwInsight',
@@ -43,10 +60,10 @@ export default function RootLayout({
 }>) {
   // const [sidebarOpen, setSidebarOpen] = useState(false)
   return (
-    <html lang="zh-Hant" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full">
+    <html lang="zh-Hant" className={`${notoSansTC.variable} ${inter.variable} ${plexMono.variable} h-full antialiased`}>
+      <body>
         <Providers>
-          <Sidebar>{children}</Sidebar>
+          <PageLayout>{children}</PageLayout>
         </Providers>
       </body>
     </html>

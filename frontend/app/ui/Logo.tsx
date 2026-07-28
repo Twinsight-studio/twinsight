@@ -5,7 +5,7 @@ export default function Logo() {
     <>
       <div className="mt-2 flex items-end justify-center">
         <Image src="/images/twinsight_logo.svg" width={30} height={26} alt="TwInsight Logo" />
-        <div className="ml-1 text-xl leading-4 font-bold tracking-wider text-white">
+        <div className="ml-1 text-xl leading-4 font-bold tracking-wider">
           Tw<span className="text-brand-500">Insight</span>
         </div>
       </div>
