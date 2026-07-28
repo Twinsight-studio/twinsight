@@ -1,3 +1,9 @@
 module.exports = {
-  content: ['./pages/**/*.{js,ts,jsx,tsx,mdx}', './components/**/*.{js,ts,jsx,tsx}', './app/**/*.module.css'],
+  content: [
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.module.css',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './lib/**/*.{js,ts,jsx,tsx,mdx}',
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
 }

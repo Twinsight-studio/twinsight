@@ -46,7 +46,8 @@
   "files.autoSave": "off",
   "files.eol": "\n",
   "files.associations": {
-    "*.json": "json"
+    "*.json": "json",
+    "*.css": "tailwindcss"
   },
   /*
    * Emmet (在 React 中通常不需要特別擴充，系統預設已支援 JSX)
@@ -87,5 +88,17 @@
    * CSS
    * 在 tailwind 使用 @apply 會出現 Unknow at rule，忽略此項
    */
-  "css.lint.unknownAtRules": "ignore"
+  "css.lint.unknownAtRules": "ignore",
+
+  "tailwindCSS.includeLanguages": {
+    "css": "css",
+    "postcss": "css"
+  },
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ]
 }
