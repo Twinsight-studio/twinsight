@@ -21,6 +21,14 @@ class Settings(BaseSettings):
 
     jwt_secret: str = "change-me-in-production"
 
+    jwt_algorithm: str = "HS256"
+
+    jwt_expires_minutes: int = 60 * 30  # 30 minutes
+
+    auth_username: str = "admin"
+
+    auth_password: str = "admin123"
+
 
 @lru_cache
 def get_settings() -> Settings:

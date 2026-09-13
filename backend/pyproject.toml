@@ -13,6 +13,7 @@ dependencies = [
     "alembic>=1.14",
     "redis>=5.2",
     "httpx>=0.27",
+    "pyjwt>=2.10.1",
 ]
 
 # ponytail: split via optional-dependencies (PEP 621), not a new tool —
